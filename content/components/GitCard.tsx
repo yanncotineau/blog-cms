@@ -1,16 +1,18 @@
 import React from "react";
 
-export default function GitCard({
-  owner,
-  repo,
-  repoUrl,
-  description,
-}: {
+interface GithubCardProps {
   owner: string;
   repo: string;
-  repoUrl: string;
   description?: string;
-}) {
+}
+
+export default function GithubCard({
+  owner,
+  repo,
+  description,
+}: GithubCardProps) {
+  const repoUrl = `https://github.com/${owner}/${repo}`
+
   return (
     <div
       className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-sm transition-colors hover:bg-white/10"
