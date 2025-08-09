@@ -41,3 +41,12 @@ a { color: var(--accent); }
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
+
+/* multi-line clamp utility */
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;  /* WebKit/Blink */
+  line-clamp: 2;          /* Standard */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
