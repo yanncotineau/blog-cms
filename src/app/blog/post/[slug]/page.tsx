@@ -23,7 +23,7 @@ export default async function PostPage({
           {post.tags.map((tag) => (
             <li key={tag}>
               <Link
-                href={`/tag/${encodeURIComponent(tag)}`}
+                href={`/blog/tag/${encodeURIComponent(tag)}/page/1`}
                 className="rounded-full bg-blue-500/20 px-3 py-1 text-sm text-blue-400 hover:bg-blue-500/30"
               >
                 #{tag}

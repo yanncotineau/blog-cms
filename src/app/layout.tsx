@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "My Blog",
@@ -12,11 +13,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full bg-[var(--bg)] text-[var(--fg)] antialiased">
         <div className="mx-auto max-w-3xl px-5 py-10">
           <header className="mb-10 flex items-center justify-between">
-            <a href="/" className="text-lg font-semibold tracking-tight hover:opacity-90">
+            <Link href="/" className="text-lg font-semibold tracking-tight hover:opacity-90">
               My Blog
-            </a>
+            </Link>
             <nav className="text-sm text-[var(--muted)]">
-              <a href="/" className="hover:text-[var(--fg)]">Home</a>
+              <Link href="/" className="hover:text-[var(--fg)]">Home</Link>
             </nav>
           </header>
 
