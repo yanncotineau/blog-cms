@@ -23,13 +23,13 @@ export default function GithubCard({
         <div className="min-w-0 flex-1">
           {/* Title row */}
           <div className="flex items-baseline gap-2 min-w-0">
-            <h3 className="truncate text-lg font-semibold leading-tight">{repo}</h3>
+            <h3 className="!m-0 truncate text-lg font-semibold leading-tight">{repo}</h3>
             <span className="shrink-0 text-sm text-[var(--muted)]">@{owner}</span>
           </div>
 
           {/* Description (ellipsis after 2 lines) */}
           {description && (
-            <p className="clamp-2 mt-2 text-sm text-[var(--muted)]">
+            <p className="!mb-0 clamp-2 mt-2 text-sm text-[var(--muted)]">
               {description}
             </p>
           )}
