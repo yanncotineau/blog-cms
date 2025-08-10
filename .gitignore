@@ -42,3 +42,7 @@ next-env.d.ts
 
 # contentlayer
 .contentlayer/
+
+# the actual content is coming from https://github.com/yanncotineau/blog
+content/
+content
