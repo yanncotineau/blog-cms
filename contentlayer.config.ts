@@ -10,16 +10,11 @@ export const Post = defineDocumentType(() => ({
   contentType: "mdx",
   fields: {
     title: { type: "string", required: true },
+    slug: { type: "string", required: true },
     date: { type: "date", required: true },
     tags: { type: "list", of: { type: "string" }, required: false }
   },
-  computedFields: {
-    slug: {
-      type: "string",
-      resolve: (doc) =>
-        doc._raw.sourceFileName.replace(/\.mdx?$/, ""),
-    },
-  },
+  computedFields: {},
 }));
 
 export default makeSource({
