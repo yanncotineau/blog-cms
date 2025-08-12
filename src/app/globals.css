@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../content/**/*.{mdx,md,tsx,ts,jsx,js}";
 
 /* Theme */
 :root {

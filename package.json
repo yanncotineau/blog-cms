@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prepare-content": "rm -rf content && git clone https://github.com/yanncotineau/blog content",
-    "dev": "next dev",
+    "prepare-content": "./scripts/prepare-content.sh",
+    "dev": "npm run prepare-content && next dev",
     "build": "npm run prepare-content && next build",
     "start": "next start",
     "lint": "next lint"
