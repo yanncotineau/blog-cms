@@ -59,10 +59,10 @@ export default async function PostPage({
   const post = allPosts.find((p) => p.slug === slug);
   if (!post) return notFound();
 
-  const published = formatDateShort((post as any).date as string);
-  const updatedRel = relativeFromNow((post as any).lastCommitDate as string | undefined);
-  const lastCommitHash = (post as any).lastCommitHash as string | undefined;
-  const lastCommitUrl = (post as any).lastCommitDiffUrl as string | undefined;
+  const published = formatDateShort(post.date as string);
+  const updatedRel = relativeFromNow(post.lastCommitDate as string | undefined);
+  const lastCommitHash = post.lastCommitHash as string | undefined;
+  const lastCommitUrl = post.lastCommitDiffUrl as string | undefined;
 
   return (
     <article className="card p-6">
