@@ -3,6 +3,13 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import remarkGfm from "remark-gfm";
 import path from "path";
+import fs from "fs";
+
+
+const commitMapPath = path.join(process.cwd(), "content", "_commits.json");
+const commitMap = fs.existsSync(commitMapPath)
+  ? JSON.parse(fs.readFileSync(commitMapPath, "utf8"))
+  : {};
 
 export const Post = defineDocumentType(() => ({
   name: "Post",
@@ -14,7 +21,28 @@ export const Post = defineDocumentType(() => ({
     date: { type: "date", required: true },
     tags: { type: "list", of: { type: "string" }, required: false }
   },
-  computedFields: {},
+  computedFields: {
+    lastCommitHash: {
+      type: "string",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.hash ?? null,
+    },
+    lastCommitDate: {
+      type: "string",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.date ?? null,
+    },
+    lastCommitUrl: {
+      type: "string",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.commitUrl ?? null,
+    },
+    lastCommitDiffUrl: {
+      type: "string",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.commitFileDiffUrl ?? null,
+    },
+    sourceAtCommitUrl: {
+      type: "string",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.fileUrl ?? null,
+    },
+  },
 }));
 
 export default makeSource({

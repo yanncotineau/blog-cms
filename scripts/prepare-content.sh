@@ -12,6 +12,9 @@ rm -rf content
 # Clone blog repo into /content
 git clone https://github.com/yanncotineau/blog content
 
+# build commit map before removing .git
+node scripts/build-commit-map.js
+
 # Remove .git folder to avoid nested repo issues
 rm -rf content/.git
 
