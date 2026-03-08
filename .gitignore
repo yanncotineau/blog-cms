@@ -46,3 +46,4 @@ next-env.d.ts
 # the actual content is coming from https://github.com/yanncotineau/blog
 content/
 content
+public/images

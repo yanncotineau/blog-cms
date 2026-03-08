@@ -1,21 +1,25 @@
 #!/bin/bash
 set -e
 
-# Ensure script runs from project root
 cd "$(dirname "$0")/.."
 
-echo "🔄 Preparing content..."
-
-# Remove existing content
 rm -rf content
 
-# Clone blog repo into /content
-git clone https://github.com/yanncotineau/blog content
+if [ -d "/home/yann/dev/blog" ] && [ -z "$CI" ]; then
+  cp -r /home/yann/dev/blog content
+else
+  git clone https://github.com/yanncotineau/blog content
+fi
 
-# build commit map before removing .git
 node scripts/build-commit-map.js
-
-# Remove .git folder to avoid nested repo issues
 rm -rf content/.git
 
-echo "✅ Content ready"
+rm -rf public/images
+find content -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.webp" -o -name "*.avif" \) | while read -r img; do
+  rel="${img#content/}"
+  dest="public/images/$(dirname "$rel")/$(basename "$rel")"
+  mkdir -p "$(dirname "$dest")"
+  ln -f "$img" "$dest" 2>/dev/null || cp "$img" "$dest"
+done
+
+echo "Content ready"

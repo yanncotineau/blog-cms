@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export type PaginationProps = {
   basePath: string;
@@ -11,39 +12,71 @@ export default function Pagination({ basePath, page, totalPages }: PaginationPro
   const prev = page > 1 ? `${basePath}/${page - 1}` : null;
   const next = page < totalPages ? `${basePath}/${page + 1}` : null;
 
-  // simple pager + page numbers (1..totalPages)
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    pages.push(1);
+    if (page > 3) pages.push("...");
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i);
+    if (page < totalPages - 2) pages.push("...");
+    pages.push(totalPages);
+    return pages;
+  };
 
   return (
-    <nav className="mt-6 flex items-center justify-between">
-      <div>
-        {prev ? (
-          <Link className="rounded-md border border-white/10 px-3 py-1.5 hover:bg-white/10" href={prev}>
-            ← Prev
-          </Link>
-        ) : <span className="opacity-50">← Prev</span>}
-      </div>
-      <ul className="flex items-center gap-2 text-sm">
-        {pages.map(n => (
-          <li key={n}>
+    <nav className="mt-8 flex items-center justify-center gap-2">
+      {prev ? (
+        <Link
+          href={prev}
+          className="flex items-center gap-1 brutal-hover-sm px-3 py-2 text-sm font-medium text-slate-300"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Prev
+        </Link>
+      ) : (
+        <span className="flex items-center gap-1 border-2 border-white/20 px-3 py-2 text-sm font-medium text-slate-600 cursor-not-allowed">
+          <ChevronLeft className="h-4 w-4" />
+          Prev
+        </span>
+      )}
+
+      <div className="flex items-center gap-1">
+        {getPageNumbers().map((n, i) => (
+          typeof n === "number" ? (
             <Link
+              key={i}
               href={`${basePath}/${n}`}
-              className={`rounded-md px-2.5 py-1 ${
-                n === page ? "bg-white/15 border border-white/20" : "hover:bg-white/10 border border-transparent"
+              className={`min-w-[2.5rem] px-3 py-2 text-center text-sm font-medium transition-colors ${
+                n === page
+                  ? "bg-emerald-600 text-white border-2 border-emerald-400"
+                  : "text-slate-300 border-2 border-transparent hover:bg-white/5"
               }`}
             >
               {n}
             </Link>
-          </li>
+          ) : (
+            <span key={i} className="px-2 text-slate-600">
+              {n}
+            </span>
+          )
         ))}
-      </ul>
-      <div>
-        {next ? (
-          <Link className="rounded-md border border-white/10 px-3 py-1.5 hover:bg-white/10" href={next}>
-            Next →
-          </Link>
-        ) : <span className="opacity-50">Next →</span>}
       </div>
+
+      {next ? (
+        <Link
+          href={next}
+          className="flex items-center gap-1 brutal-hover-sm px-3 py-2 text-sm font-medium text-slate-300"
+        >
+          Next
+          <ChevronRight className="h-4 w-4" />
+        </Link>
+      ) : (
+        <span className="flex items-center gap-1 border-2 border-white/20 px-3 py-2 text-sm font-medium text-slate-600 cursor-not-allowed">
+          Next
+          <ChevronRight className="h-4 w-4" />
+        </span>
+      )}
     </nav>
   );
 }

@@ -13,15 +13,26 @@ const commitMap = fs.existsSync(commitMapPath)
 
 export const Post = defineDocumentType(() => ({
   name: "Post",
-  filePathPattern: `posts/**/*.mdx`,
+  filePathPattern: `**/*.mdx`,
   contentType: "mdx",
   fields: {
     title: { type: "string", required: true },
     slug: { type: "string", required: true },
-    date: { type: "date", required: true },
-    tags: { type: "list", of: { type: "string" }, required: false }
+    date: { type: "date", required: false },
+    tags: { type: "list", of: { type: "string" }, required: false },
+    image: { type: "string", required: false },
+    readingTime: { type: "number", required: false },
+    draft: { type: "boolean", required: false, default: false },
   },
   computedFields: {
+    resolvedImage: {
+      type: "string",
+      resolve: (doc) => {
+        if (!doc.image) return null;
+        const dir = path.dirname(doc._raw.sourceFilePath);
+        return `/images/${dir}/${doc.image}`;
+      },
+    },
     lastCommitHash: {
       type: "string",
       resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.hash ?? null,
@@ -47,6 +58,8 @@ export const Post = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: "content",
+  contentDirExclude: ["_commits.json"],
+  disableImportAliasWarning: true,
   documentTypes: [Post],
   mdx: {
     remarkPlugins: [remarkGfm],

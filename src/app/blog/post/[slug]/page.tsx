@@ -2,17 +2,19 @@ import { allPosts } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 import MDXRenderer from "@/components/MDXRenderer";
 import Link from "next/link";
+import { Calendar, Clock, ArrowLeft, ExternalLink, Tag } from "lucide-react";
+import TableOfContents from "@/components/TableOfContents";
 
 export async function generateStaticParams() {
   return allPosts.map((p) => ({ slug: p.slug }));
 }
 
-function formatDateShort(input?: string) {
+function formatDate(input?: string) {
   if (!input) return null;
   try {
-    return new Date(input).toLocaleDateString(undefined, {
+    return new Date(input).toLocaleDateString("en-US", {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
     });
   } catch {
@@ -45,7 +47,7 @@ function relativeFromNow(input?: string) {
   else if (abs >= min) { value = Math.round(diffMs / min); unit = "minute"; }
   else { value = Math.round(diffMs / sec); unit = "second"; }
 
-  return new Intl.RelativeTimeFormat(undefined, { numeric: "auto" }).format(-value, unit);
+  return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(-value, unit);
 }
 
 function shortHash(hash?: string) {
@@ -59,62 +61,97 @@ export default async function PostPage({
   const post = allPosts.find((p) => p.slug === slug);
   if (!post) return notFound();
 
-  const published = formatDateShort(post.date as string);
+  const published = formatDate(post.date as string);
   const updatedRel = relativeFromNow(post.lastCommitDate as string | undefined);
   const lastCommitHash = post.lastCommitHash as string | undefined;
   const lastCommitUrl = post.lastCommitDiffUrl as string | undefined;
 
   return (
-    <article className="card p-6">
-      <h1 className="mb-2 text-3xl font-extrabold">{post.title}</h1>
+    <div className="flex gap-8">
+      {/* Left sidebar - Table of Contents */}
+      <TableOfContents className="w-64 flex-shrink-0" />
+      
+      {/* Main article */}
+      <article className="flex-1 min-w-0">
+        {/* Back link */}
+        <Link
+          href="/blog/page/1"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors mb-8"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to all posts
+        </Link>
 
-      {/* single-line meta */}
-      <div className="mb-4 text-sm text-[var(--muted)]">
-        {published && <span>{published}</span>}
-        {updatedRel && (
-          <>
-            <span> · last updated {updatedRel} on </span>
-            <span className="ml-1">
-              {lastCommitUrl ? (
+        {/* Article header */}
+        <header className="mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+          {post.title}
+        </h1>
+
+        {/* Meta info */}
+        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+          {published && (
+            <span className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
+              {published}
+            </span>
+          )}
+          
+          {updatedRel && (
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4" />
+              Updated {updatedRel}
+              {lastCommitUrl && (
                 <a
                   href={lastCommitUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="underline-offset-2 hover:underline"
-                  aria-label="View last commit on GitHub"
+                  className="inline-flex items-center gap-1 text-emerald-400 hover:underline"
                 >
                   #{shortHash(lastCommitHash)}
+                  <ExternalLink className="h-3 w-3" />
                 </a>
-              ) : (
-                <>#{shortHash(lastCommitHash)}</>
               )}
             </span>
-          </>
-        )}
-      </div>
+          )}
+        </div>
 
-      {post.tags && post.tags.length > 0 && (
-        <>
-          <ul className="mb-4 mt-1 flex flex-wrap gap-2">
+        {/* Tags */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 mt-4">
+            <Tag className="h-4 w-4 text-slate-400" />
             {post.tags.map((tag) => (
-              <li key={tag}>
-                <Link
-                  href={`/blog/tag/${encodeURIComponent(tag)}/page/1`}
-                  className="rounded-full bg-blue-500/20 px-3 py-1 text-sm text-blue-400 hover:bg-blue-500/30"
-                >
-                  #{tag}
-                </Link>
-              </li>
+              <Link
+                key={tag}
+                href={`/blog/tag/${encodeURIComponent(tag)}/page/1`}
+                className="bg-slate-900 px-3 py-1 text-sm font-medium text-emerald-300 brutal-hover-sm cursor-pointer"
+              >
+                #{tag}
+              </Link>
             ))}
-          </ul>    
-        </>
-      )}
+          </div>
+        )}
+      </header>
 
-      <hr className="mb-2 border-white/10" />
+      {/* Divider */}
+      <hr className="border-white/10 mb-8" />
 
-      <div className="prose prose-invert max-w-none">
+      {/* Article content */}
+      <div className="prose max-w-none">
         <MDXRenderer code={post.body.code} />
       </div>
-    </article>
+
+      {/* Footer */}
+      <footer className="mt-12 pt-8 border-t border-white/10">
+        <Link
+          href="/blog/page/1"
+          className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400 hover:gap-3 transition-all"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to all posts
+        </Link>
+      </footer>
+      </article>
+    </div>
   );
 }
