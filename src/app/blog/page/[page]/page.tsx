@@ -1,15 +1,10 @@
 import { notFound } from "next/navigation";
-import { allPosts } from "contentlayer/generated";
 import Pagination from "@/components/Pagination";
 import BlogList from "@/components/BlogList";
-
-const PAGE_SIZE = 10;
-
-// Show drafts in development
-const isDev = process.env.NODE_ENV === "development";
+import { getSortedPosts, PAGE_SIZE, BLOG_INTRO } from "@/lib/posts";
 
 export async function generateStaticParams() {
-  const posts = isDev ? allPosts : allPosts.filter((p) => !p.draft);
+  const posts = getSortedPosts();
   const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
   return Array.from({ length: totalPages }, (_, i) => ({ page: String(i + 1) }));
 }
@@ -20,7 +15,7 @@ export default async function BlogIndex({
   const { page } = await params;
   const pageNum = Math.max(1, Number(page) || 1);
 
-  const sorted = [...allPosts].sort((a, b) => +(new Date(b.date ?? 0)) - +(new Date(a.date ?? 0)));
+  const sorted = getSortedPosts();
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
 
   if (pageNum > totalPages) return notFound();
@@ -30,18 +25,7 @@ export default async function BlogIndex({
 
   return (
     <div className="space-y-8">
-      {/* Posts with intro integrated */}
-      <BlogList 
-        posts={items} 
-        showDrafts={isDev}
-        intro={{
-          title: "Welcome to my blog!",
-          description: "I share things I learn, thoughts on everything software engineering.",
-          note: "No generative AI is used in the articles content, it's all handcrafted."
-        }}
-      />
-
-      {/* Pagination */}
+      <BlogList posts={items} intro={BLOG_INTRO} />
       <Pagination basePath="/blog/page" page={pageNum} totalPages={totalPages} />
     </div>
   );

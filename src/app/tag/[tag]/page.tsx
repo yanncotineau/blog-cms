@@ -3,9 +3,8 @@ import { notFound } from "next/navigation";
 import { allPosts } from "contentlayer/generated";
 import { ArrowLeft } from "lucide-react";
 import BlogList from "@/components/BlogList";
+import { getSortedPosts } from "@/lib/posts";
 import type { Metadata } from "next";
-
-const isDev = process.env.NODE_ENV === "development";
 
 export async function generateMetadata({
   params,
@@ -33,11 +32,8 @@ export default async function TagPage({
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
 
-  const posts = isDev ? allPosts : allPosts.filter((p) => !p.draft);
-  const tagged = posts.filter((p) => p.tags?.includes(decodedTag));
-  if (tagged.length === 0) return notFound();
-
-  const sorted = tagged.sort((a, b) => +(new Date(b.date ?? 0)) - +(new Date(a.date ?? 0)));
+  const sorted = getSortedPosts({ tag: decodedTag });
+  if (sorted.length === 0) return notFound();
 
   return (
     <div className="space-y-6">
@@ -58,7 +54,7 @@ export default async function TagPage({
         </p>
       </div>
 
-      <BlogList posts={sorted} showDrafts={isDev} />
+      <BlogList posts={sorted} />
     </div>
   );
 }

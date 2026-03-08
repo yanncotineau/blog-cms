@@ -10,7 +10,6 @@ import CommitTag from "@/components/CommitTag";
 
 interface BlogListProps {
   posts: Post[];
-  showDrafts: boolean;
   intro?: {
     title: string;
     description: string;
@@ -25,12 +24,8 @@ const tagButtonClass = `
   cursor-pointer
 `;
 
-export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
+export default function BlogList({ posts, intro }: BlogListProps) {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
-
-  const filteredPosts = showDrafts
-    ? posts
-    : posts.filter((post) => !post.draft);
 
   const ViewToggle = () => (
     <div className="inline-flex">
@@ -80,14 +75,14 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
 
       {viewMode === "list" ? (
         <section className="space-y-4">
-          {filteredPosts.map((post) => (
+          {posts.map((post) => (
             <article key={post.slug} className={post.draft ? "opacity-60" : ""}>
               <div className="card p-6">
                 <div className="flex gap-6">
                     {post.resolvedImage && (
-                      <div className="hidden sm:block flex-shrink-0 w-44 h-28 overflow-hidden bg-slate-800 border-2 border-white">
+                      <Link href={`/post/${post.slug}`} className="hidden sm:block flex-shrink-0 w-44 h-28 overflow-hidden bg-slate-800 border-2 border-white">
                         <Image src={post.resolvedImage} alt="" width={176} height={112} className="w-full h-full object-cover" />
-                      </div>
+                      </Link>
                     )}                  <div className="flex flex-col gap-2 flex-1 min-w-0">
                     {post.draft && (
                       <span className="self-start bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-300">
@@ -155,13 +150,13 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
         </section>
       ) : (
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredPosts.map((post) => (
+          {posts.map((post) => (
             <article key={post.slug} className={post.draft ? "opacity-60" : ""}>
               <div className="card p-0 overflow-hidden h-full flex flex-col">
                   {post.resolvedImage && (
-                    <div className="w-full h-40 bg-slate-800">
+                    <Link href={`/post/${post.slug}`} className="block w-full h-40 bg-slate-800">
                       <Image src={post.resolvedImage} alt="" width={400} height={160} className="w-full h-full object-cover" />
-                    </div>
+                    </Link>
                   )}                <div className="p-5 flex flex-col gap-3 flex-1">
                   {post.draft && (
                     <span className="self-start bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-300">
@@ -227,7 +222,7 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
         </section>
       )}
 
-      {filteredPosts.length === 0 && (
+      {posts.length === 0 && (
         <p className="text-center text-slate-400 py-12">
           No articles yet.
         </p>

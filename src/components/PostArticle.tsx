@@ -1,0 +1,131 @@
+import Link from "next/link";
+import Image from "next/image";
+import { Calendar, Clock, ArrowLeft, Tag } from "lucide-react";
+import type { Post } from "contentlayer/generated";
+import MDXRenderer from "@/components/MDXRenderer";
+import TableOfContents from "@/components/TableOfContents";
+import RelativeTime from "@/components/RelativeTime";
+import CommitTag from "@/components/CommitTag";
+import { formatDate } from "@/lib/format";
+
+interface PostArticleProps {
+  post: Post;
+  /** Where the "Back to all posts" link goes */
+  backHref: string;
+  /** Base path for tag links, e.g. "/tag" or "/blog/tag" */
+  tagBasePath: string;
+  /** Whether to show the author bio footer */
+  showAuthor?: boolean;
+}
+
+export default function PostArticle({
+  post,
+  backHref,
+  tagBasePath,
+  showAuthor = false,
+}: PostArticleProps) {
+  const published = formatDate(post.date as string);
+  const lastCommitDate = post.lastCommitDate as string | undefined;
+  const lastCommitHash = post.lastCommitHash as string | undefined;
+  const lastCommitUrl = post.lastCommitDiffUrl as string | undefined;
+  const insertions = post.lastCommitInsertions as number | undefined;
+  const deletions = post.lastCommitDeletions as number | undefined;
+
+  return (
+    <div className="flex gap-8">
+      <TableOfContents className="w-64 flex-shrink-0" />
+
+      <article className="flex-1 min-w-0">
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors mb-8"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to all posts
+        </Link>
+
+        <header className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4 font-serif">
+            {post.title}
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+            {published && (
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-4 w-4" />
+                {published}
+              </span>
+            )}
+
+            {lastCommitDate && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="h-4 w-4" />
+                Updated <RelativeTime date={lastCommitDate} />
+                {lastCommitUrl && lastCommitHash && (
+                  <CommitTag
+                    hash={lastCommitHash}
+                    url={lastCommitUrl}
+                    insertions={insertions}
+                    deletions={deletions}
+                  />
+                )}
+              </span>
+            )}
+          </div>
+
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 mt-4">
+              <Tag className="h-4 w-4 text-slate-400" />
+              {post.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`${tagBasePath}/${encodeURIComponent(tag)}`}
+                  className="px-2 py-0.5 text-xs font-medium bg-slate-900 text-slate-300 brutal-hover-sm cursor-pointer"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <hr className="border-white/10 mb-8" />
+
+        <div className="prose max-w-none">
+          <MDXRenderer code={post.body.code} />
+        </div>
+
+        <footer className="mt-12 pt-8 border-t border-white/10">
+          {showAuthor && (
+            <div className="flex gap-5 items-start mb-10">
+              <div className="flex-shrink-0 w-20 h-20 rounded-full border-2 border-white overflow-hidden">
+                <Image
+                  src="/portrait.jpg"
+                  alt="Yann Cotineau"
+                  width={80}
+                  height={80}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-base font-bold text-white tracking-wide">Yann COTINEAU</span>
+                <span className="text-sm text-emerald-400 font-medium">Fullstack Software Engineer</span>
+                <p className="text-sm text-slate-400 mt-1 leading-relaxed">
+                  I write about software engineering, AI, and things I learn along the way.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400 hover:gap-3 transition-all"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to all posts
+          </Link>
+        </footer>
+      </article>
+    </div>
+  );
+}
