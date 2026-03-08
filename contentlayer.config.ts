@@ -66,7 +66,7 @@ export const Post = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: "content",
-  contentDirExclude: ["_commits.json"],
+  contentDirExclude: ["_commits.json", "README.md"],
   disableImportAliasWarning: true,
   documentTypes: [Post],
   mdx: {

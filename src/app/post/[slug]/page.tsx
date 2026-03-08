@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import MDXRenderer from "@/components/MDXRenderer";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, Clock, ArrowLeft, GitBranch } from "lucide-react";
+import { Calendar, Clock, ArrowLeft } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
 import RelativeTime from "@/components/RelativeTime";
+import CommitTag from "@/components/CommitTag";
+import { formatDate } from "@/lib/format";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -20,23 +22,6 @@ export async function generateMetadata({
 
 export async function generateStaticParams() {
   return allPosts.map((p) => ({ slug: p.slug }));
-}
-
-function formatDate(input?: string) {
-  if (!input) return null;
-  try {
-    return new Date(input).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  } catch {
-    return input;
-  }
-}
-
-function shortHash(hash?: string) {
-  return hash ? hash.slice(0, 7) : "";
 }
 
 export default async function PostPage({
@@ -83,22 +68,13 @@ export default async function PostPage({
               <span className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" />
                 Updated <RelativeTime date={lastCommitDate} />
-                {lastCommitUrl && (
-                  <a
-                    href={lastCommitUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded font-mono cursor-pointer hover:border-emerald-500 transition-colors"
-                  >
-                    <GitBranch className="h-3.5 w-3.5 text-slate-400" />
-                    <span className="text-slate-300">#{shortHash(lastCommitHash)}</span>
-                    {insertions != null && insertions > 0 && (
-                      <span className="text-emerald-400">+{insertions}</span>
-                    )}
-                    {deletions != null && deletions > 0 && (
-                      <span className="text-red-400">-{deletions}</span>
-                    )}
-                  </a>
+                {lastCommitUrl && lastCommitHash && (
+                  <CommitTag
+                    hash={lastCommitHash}
+                    url={lastCommitUrl}
+                    insertions={insertions}
+                    deletions={deletions}
+                  />
                 )}
               </span>
             )}

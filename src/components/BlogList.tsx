@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, ArrowRight, Grid3X3, List, GitBranch, Clock } from "lucide-react";
+import { Calendar, ArrowRight, Grid3X3, List, Clock } from "lucide-react";
 import type { Post } from "contentlayer/generated";
+import { formatDate, formatFullDateTime, relativeFromNow } from "@/lib/format";
+import CommitTag from "@/components/CommitTag";
 
 interface BlogListProps {
   posts: Post[];
@@ -14,56 +16,6 @@ interface BlogListProps {
     description: string;
     note: string;
   };
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatFullDateTime(dateString: string) {
-  return new Date(dateString).toLocaleString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-function relativeFromNow(input?: string) {
-  if (!input) return null;
-  const d = new Date(input).getTime();
-  const diffMs = Date.now() - d;
-  const abs = Math.abs(diffMs);
-
-  const sec = 1000;
-  const min = 60 * sec;
-  const hour = 60 * min;
-  const day = 24 * hour;
-  const week = 7 * day;
-  const month = 30 * day;
-  const year = 365 * day;
-
-  let value: number;
-  let unit: Intl.RelativeTimeFormatUnit;
-
-  if (abs >= year) { value = Math.round(diffMs / year); unit = "year"; }
-  else if (abs >= month) { value = Math.round(diffMs / month); unit = "month"; }
-  else if (abs >= week) { value = Math.round(diffMs / week); unit = "week"; }
-  else if (abs >= day) { value = Math.round(diffMs / day); unit = "day"; }
-  else if (abs >= hour) { value = Math.round(diffMs / hour); unit = "hour"; }
-  else if (abs >= min) { value = Math.round(diffMs / min); unit = "minute"; }
-  else { value = Math.round(diffMs / sec); unit = "second"; }
-
-  return new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(-value, unit);
-}
-
-function shortHash(hash?: string) {
-  return hash ? hash.slice(0, 7) : "";
 }
 
 const tagButtonClass = `
@@ -158,25 +110,16 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                       )}
                       
                       {post.lastCommitDate && (
-                        <span className="flex items-center gap-1.5" title={formatFullDateTime(post.lastCommitDate as string)}>
+                        <span className="flex items-center gap-1.5" title={formatFullDateTime(post.lastCommitDate as string) ?? undefined}>
                           <Clock className="h-4 w-4" />
                           <span>Updated {relativeFromNow(post.lastCommitDate as string)}</span>
-                          {post.lastCommitDiffUrl && (
-                            <a
-                              href={post.lastCommitDiffUrl as string}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 font-mono text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded cursor-pointer hover:border-emerald-500 transition-colors"
-                            >
-                              <GitBranch className="h-3.5 w-3.5 text-slate-400" />
-                              <span className="text-slate-300">#{shortHash(post.lastCommitHash as string)}</span>
-                              {(post.lastCommitInsertions as number) > 0 && (
-                                <span className="text-emerald-400">+{post.lastCommitInsertions as number}</span>
-                              )}
-                              {(post.lastCommitDeletions as number) > 0 && (
-                                <span className="text-red-400">-{post.lastCommitDeletions as number}</span>
-                              )}
-                            </a>
+                          {post.lastCommitDiffUrl && post.lastCommitHash && (
+                            <CommitTag
+                              hash={post.lastCommitHash as string}
+                              url={post.lastCommitDiffUrl as string}
+                              insertions={post.lastCommitInsertions as number}
+                              deletions={post.lastCommitDeletions as number}
+                            />
                           )}
                         </span>
                       )}
@@ -240,25 +183,17 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                   )}
                   
                   {post.lastCommitDate && (
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500" title={formatFullDateTime(post.lastCommitDate as string)}>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500" title={formatFullDateTime(post.lastCommitDate as string) ?? undefined}>
                       <Clock className="h-3 w-3" />
                       <span>Updated {relativeFromNow(post.lastCommitDate as string)}</span>
                       {post.lastCommitDiffUrl && post.lastCommitHash && (
-                        <a
-                          href={post.lastCommitDiffUrl as string}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 font-mono bg-slate-800 px-1 py-0.5 border border-slate-600 rounded cursor-pointer hover:border-emerald-500 transition-colors"
-                        >
-                          <GitBranch className="h-3 w-3 text-slate-400" />
-                          <span className="text-slate-300">#{shortHash(post.lastCommitHash as string)}</span>
-                          {(post.lastCommitInsertions as number) > 0 && (
-                            <span className="text-emerald-400">+{post.lastCommitInsertions as number}</span>
-                          )}
-                          {(post.lastCommitDeletions as number) > 0 && (
-                            <span className="text-red-400">-{post.lastCommitDeletions as number}</span>
-                          )}
-                        </a>
+                        <CommitTag
+                          hash={post.lastCommitHash as string}
+                          url={post.lastCommitDiffUrl as string}
+                          insertions={post.lastCommitInsertions as number}
+                          deletions={post.lastCommitDeletions as number}
+                          compact
+                        />
                       )}
                     </div>
                   )}
