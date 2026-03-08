@@ -30,7 +30,7 @@ export default function CommitTag({
         ${compact ? "px-1.5 py-0.5 text-[11px]" : "px-2 py-0.5 text-xs"}`}
     >
       <GitCommit className={`${iconSize} text-slate-400`} />
-      <span>#{shortHash(hash)}</span>
+      <span className="text-slate-300">#{shortHash(hash)}</span>
       {insertions != null && insertions > 0 && (
         <span style={{ color: "#3fb950" }}>+{insertions}</span>
       )}
