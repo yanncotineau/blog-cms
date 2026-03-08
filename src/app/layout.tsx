@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Lora } from "next/font/google";
+import { DM_Sans, Lora } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import VideoBackground from "@/components/VideoBackground";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
+});
 
 const lora = Lora({
   subsets: ["latin"],
@@ -17,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`dark ${lora.variable}`}>
+    <html lang="en" className={`dark ${lora.variable} ${dmSans.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>

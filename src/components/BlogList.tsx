@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, ArrowRight, Grid3X3, List, GitCommit } from "lucide-react";
+import { Calendar, ArrowRight, Grid3X3, List, GitCommit, Clock } from "lucide-react";
 import type { Post } from "contentlayer/generated";
 
 interface BlogListProps {
@@ -159,16 +159,17 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                       
                       {post.lastCommitDate && (
                         <span className="flex items-center gap-1.5" title={formatFullDateTime(post.lastCommitDate as string)}>
-                          <GitCommit className="h-4 w-4" />
-                          <span>changed {relativeFromNow(post.lastCommitDate as string)}</span>
+                          <Clock className="h-4 w-4" />
+                          <span>Updated {relativeFromNow(post.lastCommitDate as string)}</span>
                           {post.lastCommitDiffUrl && (
                             <a
                               href={post.lastCommitDiffUrl as string}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-emerald-400 hover:underline font-mono"
+                              className="inline-flex items-center gap-1 text-emerald-400 hover:underline font-mono text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded"
                             >
                               #{shortHash(post.lastCommitHash as string)}
+                              <GitCommit className="h-3 w-3" />
                             </a>
                           )}
                         </span>
@@ -233,11 +234,14 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                   )}
                   
                   {post.lastCommitDate && (
-                    <div className="flex items-center gap-1 text-xs text-slate-500" title={formatFullDateTime(post.lastCommitDate as string)}>
-                      <GitCommit className="h-3 w-3" />
-                      <span>{relativeFromNow(post.lastCommitDate as string)}</span>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500" title={formatFullDateTime(post.lastCommitDate as string)}>
+                      <Clock className="h-3 w-3" />
+                      <span>Updated {relativeFromNow(post.lastCommitDate as string)}</span>
                       {post.lastCommitHash && (
-                        <span className="font-mono">#{shortHash(post.lastCommitHash as string)}</span>
+                        <span className="inline-flex items-center gap-1 font-mono bg-slate-800 px-1 py-0.5 border border-slate-600 rounded text-slate-400">
+                          #{shortHash(post.lastCommitHash as string)}
+                          <GitCommit className="h-2.5 w-2.5" />
+                        </span>
                       )}
                     </div>
                   )}

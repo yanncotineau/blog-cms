@@ -2,7 +2,7 @@ import { allPosts } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 import MDXRenderer from "@/components/MDXRenderer";
 import Link from "next/link";
-import { Calendar, Clock, ArrowLeft, ExternalLink, Tag } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, GitCommit, Tag } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
 
 export async function generateStaticParams() {
@@ -106,10 +106,10 @@ export default async function PostPage({
                   href={lastCommitUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-emerald-400 hover:underline"
+                  className="inline-flex items-center gap-1 text-emerald-400 hover:underline text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded font-mono"
                 >
                   #{shortHash(lastCommitHash)}
-                  <ExternalLink className="h-3 w-3" />
+                  <GitCommit className="h-3 w-3" />
                 </a>
               )}
             </span>

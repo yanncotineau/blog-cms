@@ -8,11 +8,9 @@ export default function VideoBackground() {
         loop
         muted
         playsInline
-        className="absolute min-w-full min-h-full w-auto h-auto object-cover"
+        className="absolute w-full h-full object-cover"
         style={{
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
+          minHeight: "100dvh",
         }}
       >
         <source src="/background.mp4" type="video/mp4" />

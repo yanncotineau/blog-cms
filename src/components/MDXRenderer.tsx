@@ -50,6 +50,14 @@ const mdxComponents = {
   InfoBox,
   Figure,
   Carousel,
+  a: ({ href, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
+    return (
+      <a href={href} {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})} {...props}>
+        {children}
+      </a>
+    );
+  },
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => <HeadingLink as="h2" {...props} />,
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => <HeadingLink as="h3" {...props} />,
   h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => <HeadingLink as="h4" {...props} />,

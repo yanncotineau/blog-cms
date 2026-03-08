@@ -176,17 +176,23 @@ export default function TableOfContents({ className = "" }: TableOfContentsProps
       <div className="lg:hidden fixed bottom-4 right-4 z-40">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-3 bg-emerald-500 text-white shadow-lg hover:bg-emerald-600 transition-colors cursor-pointer"
+          className="p-3 bg-slate-950 text-white border-2 border-white shadow-lg hover:bg-slate-800 transition-colors cursor-pointer"
           aria-label="Table of contents"
         >
           <List className="h-5 w-5" />
         </button>
         
-        {isOpen && hasSections && (
-          <div className="absolute bottom-14 right-0 w-72 max-h-80 overflow-y-auto bg-slate-900 border-2 border-white shadow-[4px_4px_0_0_#fff] p-4">
-            <h3 className="font-semibold text-sm text-white mb-3">
-              Table of Contents
-            </h3>
+        {isOpen && (
+          <>
+            {/* Backdrop to dismiss on outside click */}
+            <div
+              className="fixed inset-0 z-[-1]"
+              onClick={() => setIsOpen(false)}
+            />
+            <div className="absolute bottom-14 right-0 w-72 max-h-80 overflow-y-auto bg-slate-900 border-2 border-white shadow-[4px_4px_0_0_#fff] p-4">
+              <h3 className="font-semibold text-sm text-white mb-3">
+                Table of Contents
+              </h3>
             <nav>
               <ul className="space-y-1">
                 {sections.map((section) => (
@@ -204,6 +210,7 @@ export default function TableOfContents({ className = "" }: TableOfContentsProps
               </ul>
             </nav>
           </div>
+          </>
         )}
       </div>
 
