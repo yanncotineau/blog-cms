@@ -2,7 +2,7 @@ import { allPosts } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 import MDXRenderer from "@/components/MDXRenderer";
 import Link from "next/link";
-import { Calendar, Clock, ArrowLeft, GitCommit, Tag } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, GitBranch, Tag } from "lucide-react";
 import TableOfContents from "@/components/TableOfContents";
 import RelativeTime from "@/components/RelativeTime";
 
@@ -38,6 +38,8 @@ export default async function PostPage({
   const lastCommitDate = post.lastCommitDate as string | undefined;
   const lastCommitHash = post.lastCommitHash as string | undefined;
   const lastCommitUrl = post.lastCommitDiffUrl as string | undefined;
+  const insertions = post.lastCommitInsertions as number | undefined;
+  const deletions = post.lastCommitDeletions as number | undefined;
 
   return (
     <div className="flex gap-8">
@@ -79,10 +81,16 @@ export default async function PostPage({
                   href={lastCommitUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-emerald-400 hover:underline text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded font-mono"
+                  className="inline-flex items-center gap-1.5 text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded font-mono cursor-pointer hover:border-emerald-500 transition-colors"
                 >
-                  #{shortHash(lastCommitHash)}
-                  <GitCommit className="h-3 w-3" />
+                  <GitBranch className="h-3.5 w-3.5 text-slate-400" />
+                  <span className="text-slate-300">#{shortHash(lastCommitHash)}</span>
+                  {insertions != null && insertions > 0 && (
+                    <span className="text-emerald-400">+{insertions}</span>
+                  )}
+                  {deletions != null && deletions > 0 && (
+                    <span className="text-red-400">-{deletions}</span>
+                  )}
                 </a>
               )}
             </span>

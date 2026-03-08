@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, ArrowRight, Grid3X3, List, GitCommit, Clock } from "lucide-react";
+import { Calendar, ArrowRight, Grid3X3, List, GitBranch, Clock } from "lucide-react";
 import type { Post } from "contentlayer/generated";
 
 interface BlogListProps {
@@ -166,10 +166,16 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                               href={post.lastCommitDiffUrl as string}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-emerald-400 hover:underline font-mono text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded"
+                              className="inline-flex items-center gap-1.5 font-mono text-xs bg-slate-800 px-1.5 py-0.5 border border-slate-600 rounded cursor-pointer hover:border-emerald-500 transition-colors"
                             >
-                              #{shortHash(post.lastCommitHash as string)}
-                              <GitCommit className="h-3 w-3" />
+                              <GitBranch className="h-3.5 w-3.5 text-slate-400" />
+                              <span className="text-slate-300">#{shortHash(post.lastCommitHash as string)}</span>
+                              {(post.lastCommitInsertions as number) > 0 && (
+                                <span className="text-emerald-400">+{post.lastCommitInsertions as number}</span>
+                              )}
+                              {(post.lastCommitDeletions as number) > 0 && (
+                                <span className="text-red-400">-{post.lastCommitDeletions as number}</span>
+                              )}
                             </a>
                           )}
                         </span>
@@ -242,10 +248,16 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                           href={post.lastCommitDiffUrl as string}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-emerald-400 hover:underline font-mono bg-slate-800 px-1 py-0.5 border border-slate-600 rounded"
+                          className="inline-flex items-center gap-1.5 font-mono bg-slate-800 px-1 py-0.5 border border-slate-600 rounded cursor-pointer hover:border-emerald-500 transition-colors"
                         >
-                          #{shortHash(post.lastCommitHash as string)}
-                          <GitCommit className="h-2.5 w-2.5" />
+                          <GitBranch className="h-3 w-3 text-slate-400" />
+                          <span className="text-slate-300">#{shortHash(post.lastCommitHash as string)}</span>
+                          {(post.lastCommitInsertions as number) > 0 && (
+                            <span className="text-emerald-400">+{post.lastCommitInsertions as number}</span>
+                          )}
+                          {(post.lastCommitDeletions as number) > 0 && (
+                            <span className="text-red-400">-{post.lastCommitDeletions as number}</span>
+                          )}
                         </a>
                       )}
                     </div>

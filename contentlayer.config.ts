@@ -53,6 +53,14 @@ export const Post = defineDocumentType(() => ({
       type: "string",
       resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.fileUrl ?? null,
     },
+    lastCommitInsertions: {
+      type: "number",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.insertions ?? null,
+    },
+    lastCommitDeletions: {
+      type: "number",
+      resolve: (doc) => commitMap[doc._raw.sourceFilePath]?.deletions ?? null,
+    },
   },
 }));
 
