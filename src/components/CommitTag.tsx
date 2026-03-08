@@ -17,7 +17,7 @@ export default function CommitTag({
   deletions,
   compact = false,
 }: CommitTagProps) {
-  const iconSize = compact ? "h-3 w-3" : "h-3.5 w-3.5";
+  const iconSize = compact ? "h-3.5 w-3.5" : "h-4 w-4";
 
   return (
     <a
@@ -32,10 +32,10 @@ export default function CommitTag({
       <GitCommit className={`${iconSize} text-slate-400`} />
       <span>#{shortHash(hash)}</span>
       {insertions != null && insertions > 0 && (
-        <span className="text-emerald-400">+{insertions}</span>
+        <span style={{ color: "#3fb950" }}>+{insertions}</span>
       )}
       {deletions != null && deletions > 0 && (
-        <span className="text-red-400">-{deletions}</span>
+        <span style={{ color: "#f85149" }}>-{deletions}</span>
       )}
     </a>
   );
