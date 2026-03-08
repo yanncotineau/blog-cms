@@ -8,10 +8,7 @@ export default function VideoBackground() {
         loop
         muted
         playsInline
-        className="absolute w-full h-full object-cover"
-        style={{
-          minHeight: "100dvh",
-        }}
+        className="bg-video"
       >
         <source src="/background.mp4" type="video/mp4" />
       </video>

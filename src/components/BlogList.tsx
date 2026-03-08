@@ -74,7 +74,7 @@ const tagButtonClass = `
 `;
 
 export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
 
   const filteredPosts = showDrafts
     ? posts
@@ -83,18 +83,18 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
   const ViewToggle = () => (
     <div className="inline-flex">
       <button
-        onClick={() => setViewMode("list")}
-        className={`p-2 cursor-pointer border-2 border-white transition-all duration-75 ${viewMode === "list" ? "bg-white text-slate-900" : "bg-slate-900 text-slate-400 hover:text-slate-200 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0_0_#fff]"}`}
-        aria-label="List view"
-      >
-        <List className="h-4 w-4" />
-      </button>
-      <button
         onClick={() => setViewMode("grid")}
-        className={`p-2 cursor-pointer border-2 border-white border-l-0 transition-all duration-75 ${viewMode === "grid" ? "bg-white text-slate-900" : "bg-slate-900 text-slate-400 hover:text-slate-200 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0_0_#fff]"}`}
+        className={`p-2 cursor-pointer border-2 border-white transition-all duration-75 ${viewMode === "grid" ? "bg-white text-slate-900" : "bg-slate-900 text-slate-400 hover:text-slate-200 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0_0_#fff]"}`}
         aria-label="Grid view"
       >
         <Grid3X3 className="h-4 w-4" />
+      </button>
+      <button
+        onClick={() => setViewMode("list")}
+        className={`p-2 cursor-pointer border-2 border-white border-l-0 transition-all duration-75 ${viewMode === "list" ? "bg-white text-slate-900" : "bg-slate-900 text-slate-400 hover:text-slate-200 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0_0_#fff]"}`}
+        aria-label="List view"
+      >
+        <List className="h-4 w-4" />
       </button>
     </div>
   );
@@ -237,11 +237,16 @@ export default function BlogList({ posts, showDrafts, intro }: BlogListProps) {
                     <div className="flex items-center gap-1.5 text-xs text-slate-500" title={formatFullDateTime(post.lastCommitDate as string)}>
                       <Clock className="h-3 w-3" />
                       <span>Updated {relativeFromNow(post.lastCommitDate as string)}</span>
-                      {post.lastCommitHash && (
-                        <span className="inline-flex items-center gap-1 font-mono bg-slate-800 px-1 py-0.5 border border-slate-600 rounded text-slate-400">
+                      {post.lastCommitDiffUrl && post.lastCommitHash && (
+                        <a
+                          href={post.lastCommitDiffUrl as string}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-emerald-400 hover:underline font-mono bg-slate-800 px-1 py-0.5 border border-slate-600 rounded"
+                        >
                           #{shortHash(post.lastCommitHash as string)}
                           <GitCommit className="h-2.5 w-2.5" />
-                        </span>
+                        </a>
                       )}
                     </div>
                   )}

@@ -37,6 +37,19 @@ body {
   font-family: var(--font-lora), Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
+/* Background video — uses 100lvh so it never resizes when mobile browser chrome toggles */
+.bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}
+
 /* Soft shadow */
 .shadow-soft {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
