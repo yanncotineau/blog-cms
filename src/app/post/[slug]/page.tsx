@@ -28,10 +28,10 @@ export async function generateMetadata({
       url,
       siteName: SITE_NAME,
       ...(image && { images: [{ url: image }] }),
-      publishedTime: post.date ?? undefined,
-      modifiedTime: post.lastCommitDate ?? undefined,
+      ...(post.date && { publishedTime: post.date }),
+      ...(post.lastCommitDate && { modifiedTime: post.lastCommitDate }),
       authors: [AUTHOR.name],
-      tags: post.tags ?? undefined,
+      ...(post.tags && { tags: post.tags }),
     },
     twitter: {
       card: image ? "summary_large_image" : "summary",
@@ -59,10 +59,14 @@ export default async function PostPage({
     "@type": "BlogPosting",
     headline: post.title,
     ...(post.description && { description: post.description }),
-    ...(post.resolvedImage && { image: `${SITE_URL}${post.resolvedImage}` }),
+    ...(post.resolvedImage && {
+      image: new URL(post.resolvedImage, SITE_URL).toString(),
+    }),
     url: `${SITE_URL}/post/${post.slug}`,
-    datePublished: post.date ?? undefined,
-    dateModified: post.lastCommitDate ?? post.date ?? undefined,
+    ...(post.date && { datePublished: post.date }),
+    ...((post.lastCommitDate ?? post.date) && {
+      dateModified: post.lastCommitDate ?? post.date,
+    }),
     author: {
       "@type": "Person",
       name: AUTHOR.name,
