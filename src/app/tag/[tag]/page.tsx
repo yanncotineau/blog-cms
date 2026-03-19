@@ -5,14 +5,33 @@ import { ArrowLeft } from "lucide-react";
 import BlogList from "@/components/BlogList";
 import { getSortedPosts } from "@/lib/posts";
 import type { Metadata } from "next";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
 }: { params: Promise<{ tag: string }> }): Promise<Metadata> {
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
+  const title = `Posts tagged "${decodedTag}"`;
+  const description = `Browse all blog posts tagged with "${decodedTag}" on ${SITE_NAME}.`;
+  const url = `${SITE_URL}/tag/${tag}`;
+
   return {
-    title: `Posts tagged ${decodedTag} - Yann COTINEAU - Blog`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url,
+      siteName: SITE_NAME,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
   };
 }
 
